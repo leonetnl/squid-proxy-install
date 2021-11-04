@@ -12,6 +12,7 @@ fi
 chmod +x ./squid-conf-ip.sh
 chmod +x ./squid-add-user.sh
 chmod +x ./squid-uninstall.sh
+chmod +x ./squid-add-iprange.sh
 
 echo -e "\033[31m";
 read -p "This script will install squid and remove existing installations of squid. Are you sure you want to continue? (y/n)" -n 1 -r
@@ -28,22 +29,8 @@ fi
 echo
 echo -e "\033[00m";
 
-
-apt install prips
-
-echo -e "\e[92mEnter ip range including netmask e.g. (192.168.1.1/28)"
-echo -e "\033[00m";
-read ip
-ips=$(prips $ip | sed -e '1d; $d' | awk -vORS=, '{ print $1 }' | sed 's/,$/\n/')
-sed -i "s/addresses: \[\(.*\)\]/addresses: [$ips]/g" 60-static.yaml
-
-#generate ip list
-if [[ -d /etc/netplan/ ]]; then
-    cp -i 60-static.yaml /etc/netplan/60-static.yaml
-else
-   echo "Netplan not installed"
-   exit 1
-fi
+# add ip range to netplan
+./squid-add-iprange.sh
 
 
 if cat /etc/os-release | grep PRETTY_NAME | grep "Ubuntu 20.04"; then
