@@ -5,10 +5,8 @@ if [ `whoami` != root ]; then
 	exit 1
 fi
 
-echo -e "\033[31m";
 echo "Which user do you want to delete?"
 read user
 sed -i "/${user}:/d" /etc/squid/passwd
-echo -e "\033[00m";
 echo "Available users:"
-ls /etc/squid/passwd
+cat /etc/squid/passwd
