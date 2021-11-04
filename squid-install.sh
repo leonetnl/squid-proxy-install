@@ -9,6 +9,10 @@ if [ `whoami` != root ]; then
 	exit 1
 fi
 
+chmod +x ./squid-conf-ip.sh
+chmod +x ./squid-add-user.sh
+chmod +x ./squid-uninstall.sh
+
 echo -e "\033[31m";
 read -p "This script will install squid and remove existing installations of squid. Are you sure you want to continue? (y/n)" -n 1 -r
 if [[ ! $REPLY =~ ^[Yy]$ ]]
@@ -23,8 +27,7 @@ if [[ -d /etc/squid/ ]]; then
 fi
 echo
 echo -e "\033[00m";
-chmod +x ./squid-conf-ip.sh
-chmod +x ./squid-add-user.sh
+
 
 apt install prips
 
