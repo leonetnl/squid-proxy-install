@@ -10,7 +10,8 @@ if [ ! -f /usr/bin/htpasswd ]; then
 fi
 
 read -e -p "Enter Proxy username: " proxy_username
+read -e -p "Enter Proxy password: " proxy_password
 
-
-/usr/bin/htpasswd -p /etc/squid/passwd $proxy_username
+/usr/bin/htpasswd -b /etc/squid/passwd $proxy_username $proxy_password
+/sbin/ip -4 -o addr show scope global | awk '{gsub(/\/.*/,"",$4); print $4":3128"}' | awk -v var="$proxy_username" -v pass="$proxy_password" '{ print $0":"var":"pass }'
 systemctl reload squid
