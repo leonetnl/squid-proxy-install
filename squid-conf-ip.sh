@@ -2,6 +2,7 @@
 # Author: admin@serverOk.in
 # Web: https://www.serverok.in
 
+
 IP_ALL=$(/sbin/ip -4 -o addr show scope global | awk '{gsub(/\/.*/,"",$4); print $4}')
 
 IP_ALL_ARRAY=($IP_ALL)
@@ -16,7 +17,7 @@ done
 
 echo "Updating squid config"
 
-echo -e $SQUID_CONFIG >> /etc/squid/squid.conf
+echo -e $SQUID_CONFIG > /etc/squid/outgoing.conf
 
 echo "Restarting squid..."
 
