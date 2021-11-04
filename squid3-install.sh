@@ -6,15 +6,27 @@
 # Github: https://github.com/serverok/squid-proxy-installer/
 # Web: https://serverok.in/squid
 ############################################################
-# For paid support, contact
-# https://serverok.in/contact
-############################################################
+
+if [ `whoami` != root ]; then
+	echo "ERROR: You need to run the script as user root or add sudo before command."
+	exit 1
+fi
 
 apt install prips
 
-# generate ip list
-ips=$(prips 192.168.0.0/23 | sed -e '1d; $d' | awk -vORS=, '{ print $1 }' | sed 's/,$/\n/')
-gsed -i "s/addresses:/addresses: [$ips]/g" 60-static.yaml
+echo "Enter ip range including netmask e.g. (192.168.1.1/28)"
+read ip
+ips=$(prips $ip | sed -e '1d; $d' | awk -vORS=, '{ print $1 }' | sed 's/,$/\n/')
+gsed -i "s/addresses: \[\(.*\)\]/addresses: [$ips]/g" 60-static.yaml
+
+#generate ip list
+if [[ -d /etc/netplan/ ]]; then
+    cp -i 60-static.yaml /etc/netplan/60-static.yaml
+else
+   echo "Netplan not installed"
+   exit 1
+fi
+
 
 # if [ `whoami` != root ]; then
 # 	echo "ERROR: You need to run the script as user root or add sudo before command."
@@ -28,6 +40,21 @@ gsed -i "s/addresses:/addresses: [$ips]/g" 60-static.yaml
 # fi
 
 
+if cat /etc/os-release | grep PRETTY_NAME | grep "Ubuntu 20.04"; then
+    apt update
+    apt -y install apache2-utils squid
+    touch /etc/squid/passwd
+    rm -f /etc/squid/squid.conf
+    touch /etc/squid/blacklist.acl
+    cp -i squid.conf /etc/squid/squid.conf
+    if [ -f /sbin/iptables ]; then
+        /sbin/iptables -I INPUT -p tcp --dport 3128 -j ACCEPT
+        /sbin/iptables-save
+    fi
+    service squid restart
+    systemctl enable squid
+    ./squid-conf-ip.sh
+fi
 
 
 # if cat /etc/os-release | grep PRETTY_NAME | grep "Ubuntu 20.04"; then
