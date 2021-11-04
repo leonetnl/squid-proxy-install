@@ -17,10 +17,11 @@ read -e -p "IP to (e.g. 192.168.1.10):" proxy_ip_to
 IP_ALL=$(/sbin/ip -4 -o addr show scope global | awk '{gsub(/\/.*/,"",$4); print $4}')
 IP_ALL_ARRAY=($IP_ALL)
 
-if [[ ! " ${IP_ALL_ARRAY[*]} " =~ " ${proxy_ip_from} " || ! " ${IP_ALL_ARRAY[*]} " =~ " ${proxy_ip_to} "]]; then
+if ! printf '%s\n' "${IP_ALL_ARRAY[@]}" | grep -q -E $proxy_ip_from; then
     echo "IP addresses not found on the server, available addresses are ${IP_ALL}"
     exit 1
-fi
+else
+
 
 prips $proxy_ip_from $proxy_ip_to | awk -v u="$proxy_username" '{ print $0, u }' >> /etc/squid/users.conf
 
@@ -29,3 +30,4 @@ prips $proxy_ip_from $proxy_ip_to | awk -v u="$proxy_username" '{ print $0, u }'
 systemctl reload squid
 
 #https://stackoverflow.com/questions/55555482/squid-bind-each-outgoing-ip-to-a-user
+
