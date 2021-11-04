@@ -1,16 +1,30 @@
 #!/bin/bash
+
 ############################################################
 # Squid Proxy Installer
-# Author: Yujin Boby
-# Email: admin@serverOk.in
-# Github: https://github.com/serverok/squid-proxy-installer/
-# Web: https://serverok.in/squid
 ############################################################
 
 if [ `whoami` != root ]; then
 	echo "ERROR: You need to run the script as user root or add sudo before command."
 	exit 1
 fi
+
+echo -e "\033[31m";
+read -p "This script will install squid and remove existing installations of squid. Are you sure you want to continue? (y/n)" -n 1 -r
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+    exit 1
+fi
+echo
+echo
+if [[ -d /etc/squid/ ]]; then
+    echo "Squid Proxy already installed. Uninstalling .... "
+    ./squid-uninstall.sh
+fi
+echo
+echo -e "\033[00m";
+chmod +x ./squid-conf-ip.sh
+chmod +x ./squid-add-user.sh
 
 apt install prips
 
@@ -28,18 +42,6 @@ else
 fi
 
 
-# if [ `whoami` != root ]; then
-# 	echo "ERROR: You need to run the script as user root or add sudo before command."
-# 	exit 1
-# fi
-
-# if [[ -d /etc/squid/ ]]; then
-#     echo "Squid Proxy already installed. Uninstalling .... :)"
-#     sh squid-uninstall.sh
-#     exit 1
-# fi
-
-
 if cat /etc/os-release | grep PRETTY_NAME | grep "Ubuntu 20.04"; then
     apt update
     apt -y install apache2-utils squid
@@ -54,24 +56,7 @@ if cat /etc/os-release | grep PRETTY_NAME | grep "Ubuntu 20.04"; then
     service squid restart
     systemctl enable squid
     ./squid-conf-ip.sh
+    
+    # add test user
+    htpasswd -b /etc/squid/passwd test test
 fi
-
-
-# if cat /etc/os-release | grep PRETTY_NAME | grep "Ubuntu 20.04"; then
-#     /usr/bin/apt update
-#     /usr/bin/apt -y install apache2-utils squid3
-#     touch /etc/squid/passwd
-#     /bin/rm -f /etc/squid/squid.conf
-#     /usr/bin/touch /etc/squid/blacklist.acl
-#     /usr/bin/wget --no-check-certificate -O /etc/squid/squid.conf https://raw.githubusercontent.com/serverok/squid-proxy-installer/master/squid.conf
-#     if [ -f /sbin/iptables ]; then
-#         /sbin/iptables -I INPUT -p tcp --dport 3128 -j ACCEPT
-#         /sbin/iptables-save
-#     fi
-#     service squid restart
-#     systemctl enable squid
-
-
-# echo
-# echo "To create a proxy user, run command: squid-add-user"
-# echo 

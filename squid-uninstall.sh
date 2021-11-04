@@ -18,8 +18,6 @@ fi
 /usr/bin/apt -y remove --purge squid
 rm -rf /etc/squid/
 
-rm -f /usr/local/bin/squid-add-user > /dev/null 2>&1
-
 echo 
 echo 
 echo "Squid Proxy uninstalled."

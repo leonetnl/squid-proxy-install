@@ -28,33 +28,4 @@ else
     /usr/bin/htpasswd -c /etc/squid/passwd $proxy_username
 fi
 
-if [ ! -f /usr/local/bin/sok-find-os ]; then
-    echo "/usr/local/bin/sok-find-os not found"
-    exit 1
-fi
-
-SOK_OS=$(/usr/local/bin/sok-find-os)
-
-if [ $SOK_OS == "ubuntu2004" ]; then
-    systemctl reload squid
-elif [ $SOK_OS == "ubuntu1804" ]; then
-    systemctl reload squid
-elif [ $SOK_OS == "ubuntu1604" ]; then
-    service squid restart
-elif [ $SOK_OS == "ubuntu1404" ]; then
-    service squid3 restart
-elif [ $SOK_OS == "debian8" ]; then
-    service squid3 restart
-elif [ $SOK_OS == "debian9" ]; then
-    systemctl reload squid
-elif [ $SOK_OS == "debian10" ]; then
-    systemctl reload squid
-elif [ $SOK_OS == "centos7" ]; then
-    systemctl reload squid
-elif [ $SOK_OS == "centos8" ]; then
-    systemctl reload squid
-else
-    echo "OS NOT SUPPORTED.\n"
-    echo "Contact admin@serverok.in to add support for your os."
-    exit 1;
-fi
+systemctl reload squid
