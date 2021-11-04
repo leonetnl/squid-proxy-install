@@ -17,10 +17,10 @@ read -e -p "IP to (e.g. 192.168.1.10):" proxy_ip_to
 IP_ALL=$(/sbin/ip -4 -o addr show scope global | awk '{gsub(/\/.*/,"",$4); print $4}')
 IP_ALL_ARRAY=($IP_ALL)
 
-# if ! printf '%s\n' "${IP_ALL_ARRAY[@]}" | grep -q -E $proxy_ip_from; then
-#     echo "IP addresses not found on the server, available addresses are ${IP_ALL}"
-#     exit 1
-# else
+if !( ( echo ${IP_ALL_ARRAY[@]} | grep -qw $proxy_ip_from ) && ( echo ${IP_ALL_ARRAY[@]} | grep -qw $proxy_ip_to ) ) ; then
+  echo "IP not found on the server"
+  exit 1
+fi
 
 prips $proxy_ip_from $proxy_ip_to | awk -v u="$proxy_username" '{ print $0, u }' >> /etc/squid/users.conf
 
