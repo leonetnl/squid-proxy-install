@@ -32,9 +32,10 @@ echo -e "\033[00m";
 apt install prips
 
 echo -e "\e[92mEnter ip range including netmask e.g. (192.168.1.1/28)"
+echo -e "\033[00m";
 read ip
 ips=$(prips $ip | sed -e '1d; $d' | awk -vORS=, '{ print $1 }' | sed 's/,$/\n/')
-gsed -i "s/addresses: \[\(.*\)\]/addresses: [$ips]/g" 60-static.yaml
+sed -i "s/addresses: \[\(.*\)\]/addresses: [$ips]/g" 60-static.yaml
 
 #generate ip list
 if [[ -d /etc/netplan/ ]]; then
