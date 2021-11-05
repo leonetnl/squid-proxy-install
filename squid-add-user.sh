@@ -29,6 +29,14 @@ if !( ( echo ${IP_ALL_ARRAY[@]} | grep -qw $proxy_ip_from ) && ( echo ${IP_ALL_A
   exit 1
 fi
 
+read -p "Will this user expire? (y/n)" -n 1 -r
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    echo
+    read -e -p "In how many days? " expire_days
+    ./squid-delete-user.sh $proxy_username | at "now + ${expire_days} days"
+fi
+
 ips=$(prips $proxy_ip_from $proxy_ip_to)
 
 /usr/bin/htpasswd -b /etc/squid/passwd $proxy_username $proxy_password

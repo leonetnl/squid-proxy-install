@@ -48,6 +48,4 @@ if cat /etc/os-release | grep PRETTY_NAME | grep "Ubuntu 20.04"; then
     systemctl enable squid
     ./squid-conf-ip.sh
     
-    # add test user
-    htpasswd -b /etc/squid/passwd test test
 fi
