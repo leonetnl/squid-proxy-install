@@ -24,14 +24,15 @@ if !( ( echo ${IP_ALL_ARRAY[@]} | grep -qw $proxy_ip_from ) && ( echo ${IP_ALL_A
 fi
 
 ips=$(prips $proxy_ip_from $proxy_ip_to)
-echo $ips | awk -v u="$proxy_username" '{ print $0, u }' >> /etc/squid/users.conf
 
 /usr/bin/htpasswd -b /etc/squid/passwd $proxy_username $proxy_password
 
 iplist=($ips)
 for ip in ${iplist[@]}; do
+    echo "${ip} ${proxy_username}" >> /etc/squid/users.conf
     echo "${ip}:3128:${proxy_username}:${proxy_password}"
 done
+
 systemctl reload squid
 
 #https://stackoverflow.com/questions/55555482/squid-bind-each-outgoing-ip-to-a-user
