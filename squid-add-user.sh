@@ -19,6 +19,7 @@ IP_ALL_ARRAY=($IP_ALL)
 
 if !( ( echo ${IP_ALL_ARRAY[@]} | grep -qw $proxy_ip_from ) && ( echo ${IP_ALL_ARRAY[@]} | grep -qw $proxy_ip_to ) ) ; then
   echo "IP not found on the server"
+  echo $IP_ALL | awk '{ print $0 }'
   exit 1
 fi
 
