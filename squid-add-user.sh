@@ -50,4 +50,5 @@ done
 
 systemctl reload squid
 
+exit 1
 #https://stackoverflow.com/questions/55555482/squid-bind-each-outgoing-ip-to-a-user
