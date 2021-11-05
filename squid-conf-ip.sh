@@ -1,8 +1,4 @@
 #!/bin/bash
-# Author: admin@serverOk.in
-# Web: https://www.serverok.in
-
-
 IP_ALL=$(/sbin/ip -4 -o addr show scope global | awk '{gsub(/\/.*/,"",$4); print $4}')
 
 IP_ALL_ARRAY=($IP_ALL)
