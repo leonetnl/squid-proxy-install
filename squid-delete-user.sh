@@ -26,6 +26,8 @@ for id in ${arr[@]}; do
 	fi
 done
 
+systemctl reload squid
+
 echo "Available users:"
 cat /etc/squid/passwd
 
