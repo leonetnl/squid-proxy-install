@@ -34,7 +34,8 @@ if [[ $REPLY =~ ^[Yy]$ ]]
 then
     echo
     read -e -p "In how many days? " expire_days
-    ./squid-delete-user.sh $proxy_username | at "now + ${expire_days} days"
+    echo "${PWD}/squid-delete-user.sh ${proxy_username}" | at "now + ${expire_days} minute"
+    echo
 fi
 
 ips=$(prips $proxy_ip_from $proxy_ip_to)
