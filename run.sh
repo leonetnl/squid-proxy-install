@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PS3='Please enter your choice: '
-options=("Add user" "Delete user" "Install Squid" "Uninstall Squid" "Quit")
+options=("Add user" "Delete user" "Install Squid" "Uninstall Squid" "Squid status" "Squid restart" "Squid start" "Squid stop" "Quit")
 select opt in "${options[@]}"
 do
     case $opt in
@@ -18,6 +18,18 @@ do
             ./squid-uninstall.sh
             ;;
         ${options[4]})
+            systemctl status squid
+            ;;
+        ${options[5]})
+            systemctl restart squid
+            ;;
+        ${options[6]})
+            systemctl start squid
+            ;;
+        ${options[7]})
+            systemctl stop squid
+            ;;
+        ${options[8]})
             break
             ;;
         *) echo "invalid option $REPLY";;
