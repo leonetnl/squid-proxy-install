@@ -8,5 +8,6 @@ fi
 echo "Which user do you want to delete?"
 read user
 sed -i "/${user}:/d" /etc/squid/passwd
+sed -i "/ ${user}/d" /etc/squid/users.conf
 echo "Available users:"
 cat /etc/squid/passwd
