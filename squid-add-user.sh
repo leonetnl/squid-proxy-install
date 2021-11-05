@@ -13,8 +13,8 @@ read -e -p "Enter Proxy username: " proxy_username
 
 if grep -q "${proxy_username}:" /etc/squid/passwd; then
     echo "Username already exists"
-    exit
-else
+    exit 1
+fi
 
 read -e -p "Enter Proxy password: " proxy_password
 read -e -p "IP from (e.g. 192.168.1.1):" proxy_ip_from
