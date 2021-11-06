@@ -12,7 +12,7 @@ do
             ./squid-delete-user.sh
             ;;
         ${options[2]})
-            sed 's/:.*//' /etc/squid/passwd
+            ./squid-list-users.sh
             ;;   
         ${options[3]})
             ./squid-install.sh

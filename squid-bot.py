@@ -18,5 +18,11 @@ async def addUser(ctx, username, password, ip_from, ip_to, days):
 async def deleteUser(ctx, username):
     await ctx.send(bash("./squid-delete-user.sh {}".format(username)))
 
+@bot.command()
+async def listUsers(ctx):
+    await ctx.send(bash("./squid-list-users.sh"))
+
+
+
 
 bot.run("OTA0OTg3OTgxNjkyMTc0MzQ3.YYDhvA.041Xkqvz8tWBx50dLY7eikRhGDw")
