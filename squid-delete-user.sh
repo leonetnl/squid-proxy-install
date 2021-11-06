@@ -21,15 +21,12 @@ for id in ${arr[@]}; do
 	qu=$(at -c $id | grep "squid-delete-user.sh" | awk '{print $2}')
 	
 	if [[ "$qu" == "$user" ]]; then
-		echo "Removing job $id"
 		atrm $id
 	fi
 done
 
 systemctl reload squid
-
-echo "Available users:"
-cat /etc/squid/passwd
+echo "User ${user} deleted"
 
 
 
