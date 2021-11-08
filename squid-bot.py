@@ -20,7 +20,6 @@ def bash(command):
 async def addUser(ctx, username, password, ip_from, ip_to, days):
     output = bash("./squid-add-user.sh {} {} {} {} {}".format(username, password, ip_from, ip_to, days))
     file = io.StringIO(output)
-    print(output)
     await ctx.send("Proxy list", file=discord.File(file, "proxies.txt"))
 
 @bot.command()
