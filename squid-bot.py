@@ -18,7 +18,9 @@ def bash(command):
 
 @bot.command()
 async def addUser(ctx, username, password, ip_from, ip_to, days):
-    await ctx.send("Proxy list", file=discord.File(BytesIO(bash("./squid-add-user.sh {} {} {} {} {}".format(username, password, ip_from, ip_to, days))), "proxies.txt"))
+    output = bash("./squid-add-user.sh {} {} {} {} {}".format(username, password, ip_from, ip_to, days))
+    print(output)
+    await ctx.send("Proxy list", file=discord.File(BytesIO(output), "proxies.txt"))
 
 @bot.command()
 async def deleteUser(ctx, username):
