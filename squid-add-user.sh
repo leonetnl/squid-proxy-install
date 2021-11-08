@@ -44,7 +44,7 @@ fi
 
 
 if [ $expire_days -gt 0 ]; then
-  echo "${PWD}/squid-delete-user.sh ${proxy_username}" | at "now + ${expire_days} minute"
+  echo "${PWD}/squid-delete-user.sh ${proxy_username}" | at "now + ${expire_days} day"
 fi
 
 
