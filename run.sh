@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PS3='Please enter your choice: '
-options=("Add user" "Delete user" "List users" "Install Squid" "Uninstall Squid" "Squid status" "Squid restart" "Squid start" "Squid stop" "Quit")
+options=("Add user" "Delete user" "List users" "Install Squid" "Uninstall Squid" "Squid status" "Squid restart" "Squid start" "Squid stop" "Start Discord bot" "Set Discord api key" "Quit")
 select opt in "${options[@]}"
 do
     case $opt in
@@ -33,6 +33,12 @@ do
             systemctl stop squid
             ;;
         ${options[9]})
+            ./squid-bot.sh
+            ;;
+        ${options[10]})
+            ./squid-bot-api.sh
+            ;;
+        ${options[11]})
             break
             ;;
         *) echo "invalid option $REPLY";;

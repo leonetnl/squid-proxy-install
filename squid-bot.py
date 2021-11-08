@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import discord
 import os
 from discord.ext import commands
@@ -25,4 +27,5 @@ async def listUsers(ctx):
 
 
 
-bot.run("OTA0OTg3OTgxNjkyMTc0MzQ3.YYDhvA.041Xkqvz8tWBx50dLY7eikRhGDw")
+#bot.run("OTA0OTg3OTgxNjkyMTc0MzQ3.YYDhvA.041Xkqvz8tWBx50dLY7eikRhGDw")
+bot.run(os.getenv('DISCORD_API_KEY'))
