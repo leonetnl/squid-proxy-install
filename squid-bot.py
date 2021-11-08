@@ -2,7 +2,7 @@
 
 import discord
 import os
-from io import BytesIO
+import io
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -19,8 +19,9 @@ def bash(command):
 @bot.command()
 async def addUser(ctx, username, password, ip_from, ip_to, days):
     output = bash("./squid-add-user.sh {} {} {} {} {}".format(username, password, ip_from, ip_to, days))
+    file = io.StringIO(output)
     print(output)
-    await ctx.send("Proxy list", file=discord.File(BytesIO(output), "proxies.txt"))
+    await ctx.send("Proxy list", file=discord.File(file, "proxies.txt"))
 
 @bot.command()
 async def deleteUser(ctx, username):
