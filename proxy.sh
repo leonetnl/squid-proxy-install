@@ -335,7 +335,7 @@ startBot() {
         ps ax | grep "python3 ./squid-bot.py" | grep -v grep | awk '{ print $1 }' | xargs kill -9
     fi
     echo "Starting"
-    sleep 5s
+    sleep 1s
     nohup python3 ./squid-bot.py &
 }
 
