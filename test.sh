@@ -1,11 +1,12 @@
 
 # require root before execution
-if [ `whoami` != root ]; then
-	echo "ERROR: You need to run the script as user root or add sudo before command."
-	exit 1
-fi
+# if [ `whoami` != root ]; then
+# 	echo "ERROR: You need to run the script as user root or add sudo before command."
+# 	exit 1
+# fi
 
 running_file_name=$(basename "$0")
+args=("$@")
 
 # read options / methods
 while getopts m: flag
@@ -139,21 +140,17 @@ installSquid() {
 #########################################################################################################
 
 addUser() {
-    if [ ! -f /usr/bin/htpasswd ]; then
-    echo "htpasswd not found"
-    exit 1
-    fi
 
-    if  test -n "${2-}" && 
-        test -n "${3-}" &&
-        test -n "${4-}" && 
-        test -n "${5-}" &&
-        test -n "${6-}"; then
-        proxy_username=$2
-        proxy_password=$3
-        proxy_ip_from=$4
-        proxy_ip_to=$5
-        expire_days=$6
+    if  test -n "${args[2]}" && 
+        test -n "${args[3]}" &&
+        test -n "${args[4]}" && 
+        test -n "${args[5]}" &&
+        test -n "${args[6]}"; then
+        proxy_username=${args[2]}
+        proxy_password=${args[3]}
+        proxy_ip_from=${args[4]}
+        proxy_ip_to=${args[5]}
+        expire_days=${args[6]}
     else
         read -e -p "Enter Proxy username: " proxy_username
         read -e -p "Enter Proxy password: " proxy_password
@@ -162,6 +159,10 @@ addUser() {
         read -e -p "In how many days will this user expire? 0 for not expiring" expire_days
     fi
 
+    if [ ! -f /usr/bin/htpasswd ]; then
+        echo "htpasswd not found"
+        exit 1
+    fi
 
     if grep -q "${proxy_username}:" /etc/squid/passwd; then
         echo "Username already exists"
