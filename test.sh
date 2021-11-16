@@ -12,6 +12,16 @@ if cat /etc/os-release | grep PRETTY_NAME | grep -v "Ubuntu 20.04"; then
 	exit 1
 fi
 
+# IP check
+serverIP=$(dig +short myip.opendns.com @resolver1.opendns.com)
+ips="185.142.27.180, 185.142.27.32, 185.142.27.234, 154.16.202.117"
+
+
+if echo $ips | grep -q -v $test; then 
+    echo "Script not running on this server"
+	exit 1
+fi
+
 running_file_name=$(basename "$0")
 args=("$@")
 
@@ -159,10 +169,11 @@ installSquid() {
     # add ip range to netplan
     addIps
 
-
     if cat /etc/os-release | grep PRETTY_NAME | grep "Ubuntu 20.04"; then
         apt update
-        apt -y install prips apache2-utils squid
+        apt -y install python3-pip prips apache2-utils squid
+        pip install -U discord.py
+        pip install python-dotenv
         touch /etc/squid/passwd
         rm -f /etc/squid/squid.conf
         touch /etc/squid/blacklist.acl
@@ -284,5 +295,94 @@ listUsers() {
     sed 's/:.*//' /etc/squid/passwd
 }
 
+#########################################################################################################
+#########################################################################################################
+##################################### CONFIGURE DISCORD BOT #############################################
+#########################################################################################################
+#########################################################################################################
 
-eval $method
+configureBot() {
+    read -e -p "Enter Discord Token: " api_key_value
+    key="DISCORD_TOKEN"
+    path="./.env"
+
+    echo "$key=$api_key_value" > $path
+    echo "Discord token set"
+}
+
+#########################################################################################################
+#########################################################################################################
+######################################### START DISCORD BOT #############################################
+#########################################################################################################
+#########################################################################################################
+
+startBot() {
+    ps ax | grep squid-bot.py | awk '{ print $1 }' | xargs kill -9
+    nohup python3 ./squid-bot.py &
+}
+
+#########################################################################################################
+#########################################################################################################
+######################################## GLOBAL ENTRY POINT #############################################
+#########################################################################################################
+#########################################################################################################
+
+start() {
+    PS3='Please enter your choice: '
+    options=("Add user" "Delete user" "List users" "Install Squid" "Uninstall Squid" "Squid status" "Squid restart" "Squid start" "Squid stop" "Start Discord bot" "Set Discord api key" "Quit")
+    select opt in "${options[@]}"
+    do
+        case $opt in
+            ${options[0]})
+                addUser
+                ;;
+            ${options[1]})
+                deleteUser
+                ;;
+            ${options[2]})
+                listUsers
+                ;;   
+            ${options[3]})
+                installSquid
+                ;;
+            ${options[4]})
+                uninstallSquid
+                ;;
+            ${options[5]})
+                status
+                ;;
+            ${options[6]})
+                restart
+                ;;
+            ${options[7]})
+                start
+                ;;
+            ${options[8]})
+                stop
+                ;;
+            ${options[9]})
+                startBot
+                ;;
+            ${options[10]})
+                configureBot
+                ;;
+            ${options[11]})
+                break
+                ;;
+            *) echo "invalid option $REPLY";;
+        esac
+    done
+}
+
+#########################################################################################################
+#########################################################################################################
+################################################ START ##################################################
+#########################################################################################################
+#########################################################################################################
+
+if [ -z "$method" ]; then
+    start
+else
+    eval $method
+fi
+
