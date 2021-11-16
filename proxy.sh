@@ -89,7 +89,7 @@ addIps() {
     echo -e "\033[00m";
     read ip
     ips=$(prips $ip | sed -e '1d; $d' | awk -vORS=, '{ print $1 "/32" }' | sed 's/,$/\n/')
-    sed -i "s~addresses: \[\(.*\)\]~addresses: [$ips]~g" 60-static.yaml
+    sed -i "s~addresses: \[\(.*\)\]~addresses: [$ips]~g" netplan.yaml
 
     #generate ip list
     if [[ -d /etc/netplan/ ]]; then
