@@ -1,5 +1,18 @@
 #!/bin/bash
 
+base64 -d <<<"CiAgX19fX19fICAgX18gIF9fICAgICAgICAgICAgICAgICAgICAgICAgX18gICAgIAogLyAgICAg
+IFwgLyAgfC8gIHwgICAgICAgICAgICAgICAgICAgICAgLyAgfCAgICAKLyQkJCQkJCAgfCQkLyAk
+JCB8ICBfX19fX18gICBfX19fX19fICAgXyQkIHxfICAgCiQkIFxfXyQkLyAvICB8JCQgfCAvICAg
+ICAgXCAvICAgICAgIFwgLyAkJCAgIHwgIAokJCAgICAgIFwgJCQgfCQkIHwvJCQkJCQkICB8JCQk
+JCQkJCAgfCQkJCQkJC8gICAKICQkJCQkJCAgfCQkIHwkJCB8JCQgICAgJCQgfCQkIHwgICQkIHwg
+ICQkIHwgX18gCi8gIFxfXyQkIHwkJCB8JCQgfCQkJCQkJCQkLyAkJCB8ICAkJCB8ICAkJCB8LyAg
+fAokJCAgICAkJC8gJCQgfCQkIHwkJCAgICAgICB8JCQgfCAgJCQgfCAgJCQgICQkLyAKICQkJCQk
+JC8gICQkLyAkJC8gICQkJCQkJCQvICQkLyAgICQkLyAgICAkJCQkLyAg"
+echo
+echo
+echo "Proxy script"
+echo
+echo
 # require root before execution
 if [ `whoami` != root ]; then
 	echo "ERROR: You need to run the script as user root or add sudo before command."
@@ -7,7 +20,7 @@ if [ `whoami` != root ]; then
 fi
 
 # OS check
-if cat /etc/os-release | grep PRETTY_NAME | grep -v "Ubuntu 20.04"; then
+if cat /etc/os-release | grep PRETTY_NAME | grep -q -v "Ubuntu 20.04"; then
     echo "Script only supports Ubuntu 20.04"
 	exit 1
 fi
