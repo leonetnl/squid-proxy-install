@@ -330,7 +330,7 @@ configureBot() {
 #########################################################################################################
 
 startBot() {
-    ps ax | grep squid-bot.py | awk '{ print $1 }' | xargs kill -9
+    #ps ax | grep squid-bot.py | awk '{ print $1 }' | xargs kill -9
     nohup ./squid-bot.py & disown
 }
 
