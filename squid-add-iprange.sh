@@ -1,5 +1,4 @@
-apt install prips
-
+#!/bin/bash
 echo -e "\e[92mEnter ip range including netmask e.g. (192.168.1.1/28)"
 echo -e "\033[00m";
 read ip
