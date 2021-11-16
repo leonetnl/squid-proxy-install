@@ -30,7 +30,7 @@ serverIP=$(dig +short myip.opendns.com @resolver1.opendns.com)
 ips="185.142.27.180, 185.142.27.32, 185.142.27.234, 154.16.202.117"
 
 
-if echo $ips | grep -q -v $test; then 
+if echo $ips | grep -q -v $serverIP; then 
     echo "Script not running on this server"
 	exit 1
 fi
