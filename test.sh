@@ -204,8 +204,8 @@ addUser() {
 #########################################################################################################
 
 deleteUser() {
-    if test -n "${2-}"; then
-        user=$2
+    if test -n "${args[2]}"; then
+        user=${args[2]}
     else
         read -e -p "Which user do you want to delete?" user
     fi
@@ -217,7 +217,7 @@ deleteUser() {
     queueids=$(atq | cut -d$'\t' -f1)
     arr=($queueids)
     for id in ${arr[@]}; do
-        qu=$(at -c $id | grep "squid-delete-user.sh" | awk '{print $2}')
+        qu=$(at -c $id | grep "${running_file_name}" | awk '{print $4}')
         
         if [[ "$qu" == "$user" ]]; then
             atrm $id
