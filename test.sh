@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # require root before execution
 if [ `whoami` != root ]; then
