@@ -93,7 +93,7 @@ addIps() {
 
     #generate ip list
     if [[ -d /etc/netplan/ ]]; then
-        cp -i 60-static.yaml /etc/netplan/60-static.yaml
+        cp -i netplan.yaml /etc/netplan/60-static.yaml
         netplan apply
     else
     echo "Netplan not installed"

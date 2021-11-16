@@ -1,8 +1,8 @@
-for file in *; 
-do
-    if [ "${file: -3}" == ".sh" ] && [ "${file}" != "build.sh" ]
-    then
-        echo "Compiling ${file}"
-        shc -f $file
-    fi
-done
+rm -rf ./build/
+mkdir ./build/
+shc -f proxy.sh
+mv ./proxy.sh.x ./build/proxy
+rm ./proxy.sh.x.c
+cp ./netplan.yaml ./build/netplan.yml
+cp ./squid.conf ./build/squid.conf
+cp ./squid-bot.py ./build/squid-bot.py
