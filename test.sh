@@ -1,0 +1,241 @@
+
+# require root before execution
+if [ `whoami` != root ]; then
+	echo "ERROR: You need to run the script as user root or add sudo before command."
+	exit 1
+fi
+
+running_file_name=$(basename "$0")
+
+# read options / methods
+while getopts m: flag
+do
+    case "${flag}" in
+        m) method=${OPTARG};;
+    esac
+done
+
+
+#########################################################################################################
+#########################################################################################################
+############################################# CONFIG IPS ################################################
+#########################################################################################################
+#########################################################################################################
+
+configIps() {
+    IP_ALL=$(/sbin/ip -4 -o addr show scope global | awk '{gsub(/\/.*/,"",$4); print $4}')
+
+    IP_ALL_ARRAY=($IP_ALL)
+
+    SQUID_CONFIG="\n"
+
+    for IP_ADDR in ${IP_ALL_ARRAY[@]}; do
+        ACL_NAME="proxy_ip_${IP_ADDR//\./_}"
+        SQUID_CONFIG+="acl ${ACL_NAME}  myip ${IP_ADDR}\n"
+        SQUID_CONFIG+="tcp_outgoing_address ${IP_ADDR} ${ACL_NAME}\n\n"
+    done
+
+    echo "Updating squid config"
+
+    echo -e $SQUID_CONFIG > /etc/squid/outgoing.conf
+
+    echo "Restarting squid..."
+
+    systemctl restart squid
+
+    echo "Done"
+
+}
+
+#########################################################################################################
+#########################################################################################################
+################################################ ADD IPS ################################################
+#########################################################################################################
+#########################################################################################################
+
+addIps() {
+    echo -e "\e[92mEnter ip range including netmask e.g. (192.168.1.1/28)"
+    echo -e "\033[00m";
+    read ip
+    ips=$(prips $ip | sed -e '1d; $d' | awk -vORS=, '{ print $1 "/32" }' | sed 's/,$/\n/')
+    sed -i "s~addresses: \[\(.*\)\]~addresses: [$ips]~g" 60-static.yaml
+
+    #generate ip list
+    if [[ -d /etc/netplan/ ]]; then
+        cp -i 60-static.yaml /etc/netplan/60-static.yaml
+        netplan apply
+    else
+    echo "Netplan not installed"
+    exit 1
+    fi
+}
+
+
+#########################################################################################################
+#########################################################################################################
+########################################### UNINSTALL SQUID #############################################
+#########################################################################################################
+#########################################################################################################
+
+uninstallSquid() {
+    /usr/bin/apt -y remove --purge squid
+    rm -rf /etc/squid/
+
+    echo 
+    echo 
+    echo "Squid Proxy uninstalled."
+    echo 
+}
+
+#########################################################################################################
+#########################################################################################################
+############################################# INSTALL SQUID #############################################
+#########################################################################################################
+#########################################################################################################
+
+installSquid() {
+    echo -e "\033[31m";
+    read -p "This script will install squid and remove existing installations of squid. Are you sure you want to continue? (y/n)" -n 1 -r
+    if [[ ! $REPLY =~ ^[Yy]$ ]]
+    then
+        exit 1
+    fi
+    echo
+    echo
+    if [[ -d /etc/squid/ ]]; then
+        echo "Squid Proxy already installed. Uninstalling .... "
+        uninstallSquid
+    fi
+    echo
+    echo -e "\033[00m";
+
+    # add ip range to netplan
+    addIps
+
+
+    if cat /etc/os-release | grep PRETTY_NAME | grep "Ubuntu 20.04"; then
+        apt update
+        apt -y install prips apache2-utils squid
+        touch /etc/squid/passwd
+        rm -f /etc/squid/squid.conf
+        touch /etc/squid/blacklist.acl
+        cp -i squid.conf /etc/squid/squid.conf
+        if [ -f /sbin/iptables ]; then
+            /sbin/iptables -I INPUT -p tcp --dport 3128 -j ACCEPT
+            /sbin/iptables-save
+        fi
+        service squid restart
+        systemctl enable squid
+        configIps
+        
+    fi
+}
+
+
+#########################################################################################################
+#########################################################################################################
+################################################ ADD USER ###############################################
+#########################################################################################################
+#########################################################################################################
+
+addUser() {
+    if [ ! -f /usr/bin/htpasswd ]; then
+    echo "htpasswd not found"
+    exit 1
+    fi
+
+    if  test -n "${2-}" && 
+        test -n "${3-}" &&
+        test -n "${4-}" && 
+        test -n "${5-}" &&
+        test -n "${6-}"; then
+        proxy_username=$2
+        proxy_password=$3
+        proxy_ip_from=$4
+        proxy_ip_to=$5
+        expire_days=$6
+    else
+        read -e -p "Enter Proxy username: " proxy_username
+        read -e -p "Enter Proxy password: " proxy_password
+        read -e -p "IP from (e.g. 192.168.1.1):" proxy_ip_from
+        read -e -p "IP to (e.g. 192.168.1.10):" proxy_ip_to
+        read -e -p "In how many days will this user expire? 0 for not expiring" expire_days
+    fi
+
+
+    if grep -q "${proxy_username}:" /etc/squid/passwd; then
+        echo "Username already exists"
+        exit 1
+    fi
+
+    IP_ALL=$(/sbin/ip -4 -o addr show scope global | awk '{gsub(/\/.*/,"",$4); print $4}')
+    IP_ALL_ARRAY=($IP_ALL)
+
+    if !( ( echo ${IP_ALL_ARRAY[@]} | grep -qw $proxy_ip_from ) && ( echo ${IP_ALL_ARRAY[@]} | grep -qw $proxy_ip_to ) ) ; then
+        echo "IP not found on the server"
+        echo $IP_ALL | awk '{ print $0 }'
+        exit 1
+    fi
+
+
+    if [ $expire_days -gt 0 ]; then
+        echo "${PWD}/${running_file_name} -m deleteUser ${proxy_username}" | at "now + ${expire_days} day"
+    fi
+
+
+    ips=$(prips $proxy_ip_from $proxy_ip_to)
+
+    /usr/bin/htpasswd -b /etc/squid/passwd $proxy_username $proxy_password
+
+    iplist=($ips)
+    for ip in ${iplist[@]}; do
+        echo "${ip} ${proxy_username}" >> /etc/squid/users.conf
+        echo "${ip}:3128:${proxy_username}:${proxy_password}"
+    done
+
+    systemctl reload squid
+}
+
+#########################################################################################################
+#########################################################################################################
+############################################### DELETE USER #############################################
+#########################################################################################################
+#########################################################################################################
+
+deleteUser() {
+    if test -n "${2-}"; then
+        user=$2
+    else
+        read -e -p "Which user do you want to delete?" user
+    fi
+
+    sed -i "/${user}:/d" /etc/squid/passwd
+    sed -i "/ ${user}/d" /etc/squid/users.conf
+
+    # loop trough queue
+    queueids=$(atq | cut -d$'\t' -f1)
+    arr=($queueids)
+    for id in ${arr[@]}; do
+        qu=$(at -c $id | grep "squid-delete-user.sh" | awk '{print $2}')
+        
+        if [[ "$qu" == "$user" ]]; then
+            atrm $id
+        fi
+    done
+
+    systemctl reload squid
+    echo "User ${user} deleted"
+}
+
+#########################################################################################################
+#########################################################################################################
+################################################ LIST USERS #############################################
+#########################################################################################################
+#########################################################################################################
+
+listUsers() {
+    sed 's/:.*//' /etc/squid/passwd
+}
+
+
+eval $method
