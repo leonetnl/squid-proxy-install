@@ -330,8 +330,11 @@ configureBot() {
 #########################################################################################################
 
 startBot() {
-    kill $(ps ax | grep "python3 ./squid-bot.py" | awk '{ print $1 }')
-    echo "Starting bot....."
+    pid=$(ps ax | grep "python3 ./squid-bot.py" | grep -v grep | awk '{ print $1 }')
+    if [ -n "$pid" ]; then
+        kill pid
+    fi
+    echo "Starting"
     sleep 5s
     nohup python3 ./squid-bot.py &
 }
