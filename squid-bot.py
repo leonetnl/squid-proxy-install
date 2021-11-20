@@ -34,11 +34,12 @@ async def addUser(ctx, username, password, ip_from, ip_to, days):
       await ctx.send(f"User {username} not found")
     else:
       output = bash("./proxy -m addUser {} {} {} {} {}".format(username, password, ip_from, ip_to, days))
-      file = io.StringIO(output)
+      file1 = io.StringIO(output)
+      file2 = io.StringIO(output)
       dm = await user.create_dm()
-      await dm.send("Your proxies", file=discord.File(file, "proxies.txt"))
+      await dm.send("Your proxies", file=discord.File(file1, "proxies.txt"))
       await dm.send(f"The proxies will expire in {days} days")
-      await ctx.send("Proxy list", file=discord.File(file, "proxies.txt"))
+      await ctx.send("Proxy list", file=discord.File(file2, "proxies.txt"))
       
 @bot.command()
 async def deleteUser(ctx, username):

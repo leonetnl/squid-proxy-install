@@ -1,18 +1,4 @@
 #!/bin/bash
-
-base64 -d <<<"CiAgX19fX19fICAgX18gIF9fICAgICAgICAgICAgICAgICAgICAgICAgX18gICAgIAogLyAgICAg
-IFwgLyAgfC8gIHwgICAgICAgICAgICAgICAgICAgICAgLyAgfCAgICAKLyQkJCQkJCAgfCQkLyAk
-JCB8ICBfX19fX18gICBfX19fX19fICAgXyQkIHxfICAgCiQkIFxfXyQkLyAvICB8JCQgfCAvICAg
-ICAgXCAvICAgICAgIFwgLyAkJCAgIHwgIAokJCAgICAgIFwgJCQgfCQkIHwvJCQkJCQkICB8JCQk
-JCQkJCAgfCQkJCQkJC8gICAKICQkJCQkJCAgfCQkIHwkJCB8JCQgICAgJCQgfCQkIHwgICQkIHwg
-ICQkIHwgX18gCi8gIFxfXyQkIHwkJCB8JCQgfCQkJCQkJCQkLyAkJCB8ICAkJCB8ICAkJCB8LyAg
-fAokJCAgICAkJC8gJCQgfCQkIHwkJCAgICAgICB8JCQgfCAgJCQgfCAgJCQgICQkLyAKICQkJCQk
-JC8gICQkLyAkJC8gICQkJCQkJCQvICQkLyAgICQkLyAgICAkJCQkLyAg"
-echo
-echo
-echo "Proxy script"
-echo
-echo
 # require root before execution
 if [ `whoami` != root ]; then
 	echo "ERROR: You need to run the script as user root or add sudo before command."
@@ -350,6 +336,19 @@ startBot() {
 #########################################################################################################
 
 start() {
+    base64 -d <<<"CiAgX19fX19fICAgX18gIF9fICAgICAgICAgICAgICAgICAgICAgICAgX18gICAgIAogLyAgICAg
+    IFwgLyAgfC8gIHwgICAgICAgICAgICAgICAgICAgICAgLyAgfCAgICAKLyQkJCQkJCAgfCQkLyAk
+    JCB8ICBfX19fX18gICBfX19fX19fICAgXyQkIHxfICAgCiQkIFxfXyQkLyAvICB8JCQgfCAvICAg
+    ICAgXCAvICAgICAgIFwgLyAkJCAgIHwgIAokJCAgICAgIFwgJCQgfCQkIHwvJCQkJCQkICB8JCQk
+    JCQkJCAgfCQkJCQkJC8gICAKICQkJCQkJCAgfCQkIHwkJCB8JCQgICAgJCQgfCQkIHwgICQkIHwg
+    ICQkIHwgX18gCi8gIFxfXyQkIHwkJCB8JCQgfCQkJCQkJCQkLyAkJCB8ICAkJCB8ICAkJCB8LyAg
+    fAokJCAgICAkJC8gJCQgfCQkIHwkJCAgICAgICB8JCQgfCAgJCQgfCAgJCQgICQkLyAKICQkJCQk
+    JC8gICQkLyAkJC8gICQkJCQkJCQvICQkLyAgICQkLyAgICAkJCQkLyAg"
+    echo
+    echo
+    echo "Proxy script"
+    echo
+    echo
     PS3='Please enter your choice: '
     options=("Add user" "Delete user" "List users" "Install Squid" "Uninstall Squid" "Squid status" "Squid restart" "Squid start" "Squid stop" "Start Discord bot" "Set Discord api key" "Quit")
     select opt in "${options[@]}"

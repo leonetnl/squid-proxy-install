@@ -1,5 +1,7 @@
-rm -rf ./build/
 mkdir ./build/
+cd ./build/
+ls | grep -v -E 'users.txt|.env' | xargs rm
+cd ..
 shc -f proxy.sh
 mv ./proxy.sh.x ./build/proxy
 rm ./proxy.sh.x.c
