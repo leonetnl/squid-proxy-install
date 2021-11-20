@@ -8,11 +8,10 @@ mv ./proxy.sh.x ./build/proxy
 rm ./proxy.sh.x.c
 cp ./netplan.yaml ./build/netplan.yaml
 cp ./squid.conf ./build/squid.conf
-cp ./squid-bot.py ./build/squid-bot.py
-pyarmor obfuscate ./build/squid-bot.py
-mv -f ./build/dist/squid-bot.py ./build/squid-bot.py
-mv ./build/dist/pytransform ./build/pytransform
-rm -rf ./build/dist/
+pyarmor obfuscate ./squid-bot.py
+mv ./dist/squid-bot.py ./build/squid-bot.py
+mv ./dist/pytransform ./build/pytransform
+rm -rf ./dist/
 chmod +x ./build/squid-bot.py
 
 # scp root@185.142.27.234:/root/squid-proxy-install/app.zip ./
