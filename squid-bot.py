@@ -28,6 +28,7 @@ async def getUser(username):
   return None 
 
 @bot.command()
+@commands.guild_only()
 async def addUser(ctx, username, password, ip_from, ip_to, days):
     user = await getUser(username)
     if user is None:
@@ -42,10 +43,12 @@ async def addUser(ctx, username, password, ip_from, ip_to, days):
       await ctx.send("Proxy list", file=discord.File(file2, "proxies.txt"))
       
 @bot.command()
+@commands.guild_only()
 async def deleteUser(ctx, username):
     await ctx.send(bash("./proxy -m deleteUser {}".format(username)))
 
 @bot.command()
+@commands.guild_only()
 async def listUsers(ctx):
     await ctx.send(bash("./proxy -m listUsers"))
 

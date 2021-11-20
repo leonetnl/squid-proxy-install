@@ -238,7 +238,7 @@ addUser() {
     if [ $expire_days -gt 0 ]; then
         substract_days=1
         notificationDay="$((expire_days-substract_days))"
-        notification=$(date +"%a %b %d %T %Y" -d "-${notificationDay} days")
+        notification=$(date +"%a %b %d %T %Y" -d "+${notificationDay} days")
         echo "${proxy_username};${notification}" >> users.txt
         echo "${PWD}/${running_file_name} -m deleteUser ${proxy_username}" | at "now + ${expire_days} day"
     fi
