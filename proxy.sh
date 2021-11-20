@@ -272,6 +272,7 @@ deleteUser() {
 
     sed -i "/${user}:/d" /etc/squid/passwd
     sed -i "/ ${user}/d" /etc/squid/users.conf
+    sed -i "/${user};/d" users.txt
 
     # loop trough queue
     queueids=$(atq | cut -d$'\t' -f1)
