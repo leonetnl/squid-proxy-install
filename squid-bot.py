@@ -52,9 +52,9 @@ async def deleteUser(ctx, username):
 async def listUsers(ctx):
     await ctx.send(bash("./proxy -m listUsers"))
 
-@sched.scheduled_job('interval', seconds=5)
+@sched.scheduled_job('interval', hours=1)
 async def timed_job():
-    print('This job is run every 10 seconds.')
+    print('This job is runs every hour')
     file = ""
     with open('users.txt') as f:
       for line in f:
