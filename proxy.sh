@@ -336,12 +336,6 @@ startBot() {
 #########################################################################################################
 
 start() {
-    base64 -d <<< "CiAgX19fX19fX19fLl9fLl9fICAgICAgICAgICAgICAgICBfXyAgIAogLyAgIF9fX19fL3xfX3wgIHwgICBfX19fICAgX19fX18vICB8XyAKIFxfX19fXyAgXCB8ICB8ICB8IF8vIF9fIFwgLyAgICBcICAgX19cCiAvICAgICAgICBcfCAgfCAgfF9cICBfX18vfCAgIHwgIFwgIHwgIAovX19fX19fXyAgL3xfX3xfX19fL1xfX18gID5fX198ICAvX198ICAKICAgICAgICBcLyAgICAgICAgICAgICAgXC8gICAgIFwvICAgICAgCg=="
-    echo
-    echo
-    echo "Proxy script"
-    echo
-    echo
     PS3='Please enter your choice: '
     options=("Add user" "Delete user" "List users" "Install Squid" "Uninstall Squid" "Squid status" "Squid restart" "Squid start" "Squid stop" "Start Discord bot" "Set Discord api key" "Quit")
     select opt in "${options[@]}"
@@ -395,6 +389,12 @@ start() {
 #########################################################################################################
 
 if [ -z "$method" ]; then
+    base64 -d <<< "CiAgX19fX19fX19fLl9fLl9fICAgICAgICAgICAgICAgICBfXyAgIAogLyAgIF9fX19fL3xfX3wgIHwgICBfX19fICAgX19fX18vICB8XyAKIFxfX19fXyAgXCB8ICB8ICB8IF8vIF9fIFwgLyAgICBcICAgX19cCiAvICAgICAgICBcfCAgfCAgfF9cICBfX18vfCAgIHwgIFwgIHwgIAovX19fX19fXyAgL3xfX3xfX19fL1xfX18gID5fX198ICAvX198ICAKICAgICAgICBcLyAgICAgICAgICAgICAgXC8gICAgIFwvICAgICAgCg=="
+    echo
+    echo
+    echo "Proxy script"
+    echo
+    echo
     start
 else
     eval $method
