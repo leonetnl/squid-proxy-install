@@ -187,6 +187,7 @@ installSquid() {
         apt -y install python3-pip prips apache2-utils squid
         pip install -U discord.py
         pip install python-dotenv
+        pip install APScheduler
         touch /etc/squid/passwd
         rm -f /etc/squid/squid.conf
         touch /etc/squid/blacklist.acl
@@ -248,8 +249,11 @@ addUser() {
         exit 1
     fi
 
-
     if [ $expire_days -gt 0 ]; then
+        substract_days=1
+        notificationDay="$((expire_days-substract_days))"
+        notification=$(date +"%a %b %d %T %Y" -d "-${notificationDay} days")
+        echo "${proxy_username};${notification}" >> users.txt
         echo "${PWD}/${running_file_name} -m deleteUser ${proxy_username}" | at "now + ${expire_days} day"
     fi
 
