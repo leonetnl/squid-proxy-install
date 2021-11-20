@@ -10,7 +10,7 @@ cp ./netplan.yaml ./build/netplan.yaml
 cp ./squid.conf ./build/squid.conf
 cp ./squid-bot.py ./build/squid-bot.py
 pyarmor obfuscate ./build/squid-bot.py
-mv ./build/dist/squid-bot.py ./build/squid-bot.py
+mv -f ./build/dist/squid-bot.py ./build/squid-bot.py
 mv ./build/dist/pytransform ./build/pytransform
 rm -rf ./build/dist/
 chmod +x ./build/squid-bot.py
