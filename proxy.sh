@@ -173,6 +173,7 @@ installSquid() {
         apt -y install python3-pip prips apache2-utils squid
         pip install -U discord.py
         pip install python-dotenv
+        pip install pyarmor
         pip install APScheduler
         touch /etc/squid/passwd
         rm -f /etc/squid/squid.conf
