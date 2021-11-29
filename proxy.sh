@@ -333,6 +333,44 @@ startBot() {
 
 #########################################################################################################
 #########################################################################################################
+######################################## INSTALL AS SERVICE #############################################
+#########################################################################################################
+#########################################################################################################
+
+installService() {
+    deamonDir="/etc/systemd/system/silentproxy.service"
+    sbinDir="/usr/local/sbin/proxy"
+    installDir="/etc/silentproxy"
+    if [ ! -d $installDir ] 
+    then
+        mkdir $installDir
+    fi
+    rm -rf "${installDir}/pytransform" || true
+    yes | cp ./proxy "${installDir}/proxy"
+    yes | cp ./squid-bot.py "${installDir}/squid-bot.py"
+    yes | cp ./pytransform "${installDir}/pytransform"
+    echo "#!/bin/bash
+        ${installDir}/proxy" > $sbinDir
+
+    echo "[Unit]
+        Description=Silent's proxy script
+
+        [Service]
+        Restart=always
+        User=root
+        WorkingDirectory=${installDir}
+        ExecStart=/usr/bin/python3 ${installDir}/squid-bot.py
+
+        [Install]
+        WantedBy=multi-user.target" > $deamonDir
+    
+    systemctl daemon-reload
+    service silentproxy stop
+    service silentproxy start
+}
+
+#########################################################################################################
+#########################################################################################################
 ######################################## GLOBAL ENTRY POINT #############################################
 #########################################################################################################
 #########################################################################################################
@@ -345,7 +383,7 @@ start() {
     echo
     echo
     PS3='Please enter your choice: '
-    options=("Add user" "Delete user" "List users" "Install Squid" "Uninstall Squid" "Squid status" "Squid restart" "Squid start" "Squid stop" "Start Discord bot" "Set Discord api key" "Quit")
+    options=("Add user" "Delete user" "List users" "Install Squid" "Uninstall Squid" "Squid status" "Squid restart" "Squid start" "Squid stop" "Start Discord bot" "Set Discord api key" "Install as service", "Quit")
     select opt in "${options[@]}"
     do
         case $opt in
@@ -383,6 +421,9 @@ start() {
                 configureBot
                 ;;
             ${options[11]})
+                configureBot
+                ;;
+            ${options[12]})
                 break
                 ;;
             *) echo "invalid option $REPLY";;
