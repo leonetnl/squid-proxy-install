@@ -358,6 +358,8 @@ installService() {
     rm -rf "${installDir}/pytransform" || true
     yes | cp ./proxy "${installDir}/proxy"
     yes | cp ./squid-bot.py "${installDir}/squid-bot.py"
+    yes | cp ./users.txt "${installDir}/users.txt" 2>/dev/null || :
+    yes | cp ./.env "${installDir}/.env" 2>/dev/null || :
     yes | cp -R ./pytransform "${installDir}/pytransform"
     echo "#!/bin/bash
         ${installDir}/proxy" > $sbinDir
@@ -369,7 +371,7 @@ installService() {
         Restart=always
         User=root
         WorkingDirectory=${installDir}
-        ExecStart=/bin/bash ${installDir}/proxy -m startBot
+        ExecStart=${installDir}/proxy -m startBot
 
         [Install]
         WantedBy=multi-user.target" > $deamonDir
@@ -377,6 +379,9 @@ installService() {
     systemctl daemon-reload
     service silentproxy stop
     service silentproxy start
+    echo "Waiting...."
+    sleep 5
+    service silentproxy status
 }
 
 #########################################################################################################
