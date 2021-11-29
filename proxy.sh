@@ -394,7 +394,7 @@ start() {
     echo
     echo
     PS3='Please enter your choice: '
-    options=("Add user" "Delete user" "List users" "Install Squid" "Uninstall Squid" "Squid status" "Squid restart" "Squid start" "Squid stop" "Start Discord bot" "Set Discord api key" "Install as service", "Quit")
+    options=("Add user" "Delete user" "List users" "Install Squid" "Uninstall Squid" "Squid status" "Squid restart" "Squid start" "Squid stop" "Start Discord bot" "Set Discord api key" "Install as service" "Quit")
     select opt in "${options[@]}"
     do
         case $opt in
@@ -432,7 +432,7 @@ start() {
                 configureBot
                 ;;
             ${options[11]})
-                configureBot
+                installService
                 ;;
             ${options[12]})
                 break
