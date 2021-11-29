@@ -336,9 +336,8 @@ stopBot() {
 
 startBot() {
     stopBot
-    echo "Starting"
-    sleep 1s
-    nohup python3 ./squid-bot.py &
+    echo "Starting bot"
+    python3 ./squid-bot.py
 }
 
 #########################################################################################################
@@ -370,7 +369,7 @@ installService() {
         Restart=always
         User=root
         WorkingDirectory=${installDir}
-        ExecStart=/usr/bin/python3 ${installDir}/squid-bot.py
+        ExecStart=/bin/bash ${installDir}/proxy -m startBot
 
         [Install]
         WantedBy=multi-user.target" > $deamonDir
