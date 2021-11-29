@@ -371,7 +371,7 @@ installService() {
         Restart=always
         User=root
         WorkingDirectory=${installDir}
-        ExecStart=${installDir}/proxy -m startBot
+        ExecStart=/usr/bin/python3 squid-bot.py
 
         [Install]
         WantedBy=multi-user.target" > $deamonDir
