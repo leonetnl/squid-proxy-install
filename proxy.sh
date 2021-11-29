@@ -359,7 +359,7 @@ installService() {
     rm -rf "${installDir}/pytransform" || true
     yes | cp ./proxy "${installDir}/proxy"
     yes | cp ./squid-bot.py "${installDir}/squid-bot.py"
-    yes | cp ./pytransform "${installDir}/pytransform"
+    yes | cp -R ./pytransform "${installDir}/pytransform"
     echo "#!/bin/bash
         ${installDir}/proxy" > $sbinDir
 
